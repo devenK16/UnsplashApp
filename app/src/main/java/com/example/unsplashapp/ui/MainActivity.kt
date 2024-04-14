@@ -44,6 +44,20 @@ class MainActivity : AppCompatActivity() {
         imageAdapter = ImageAdapter()
         recyclerView.adapter = imageAdapter
         recyclerView.layoutManager = GridLayoutManager(this, 2)
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                if (!photosViewModel.isLoading && lastVisibleItem >= totalItemCount - 1 ) {
+                    photosViewModel.getPhotos()
+                }
+            }
+        })
     }
 
     private fun bindObservers() {
@@ -51,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is NetworkResult.Success -> {
 //                    progressBar.visibility = View.GONE
-                    imageAdapter.submitList(it.data)
+                    imageAdapter.addImages(it.data!!)
                 }
                 is NetworkResult.Error -> {
 //                    progressBar.visibility = View.GONE

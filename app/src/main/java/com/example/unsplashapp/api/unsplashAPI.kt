@@ -3,8 +3,13 @@ package com.example.unsplashapp.api
 import com.example.unsplashapp.models.Image
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface unsplashAPI {
-    @GET("/photos?client_id=jsJzMhc1hlkBJn69sV6cd2L2gfTLt1hvWwjYfwQhDCQ")
-    suspend fun getPhotos() : Response<List<Image>>
+    @GET("/photos")
+    suspend fun getPhotos(
+        @Query("page") page: Int,
+        @Query("client_id") clientId: String,
+        @Query("per_page") perPage : Int = 14
+    ): Response<List<Image>>
 }

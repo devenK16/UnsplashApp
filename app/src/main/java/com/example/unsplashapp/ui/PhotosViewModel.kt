@@ -13,9 +13,15 @@ class PhotosViewModel @Inject constructor(
 ) : ViewModel() {
 
     val photosLiveData get() = photosRepository.photosLiveData
-    fun getPhotos(){
-        viewModelScope.launch{
-            photosRepository.getPhotos()
+    var isLoading: Boolean = false
+        private set
+    fun getPhotos() {
+        if (!isLoading) {
+            isLoading = true
+            viewModelScope.launch {
+                photosRepository.getPhotos()
+                isLoading = false
+            }
         }
     }
 }

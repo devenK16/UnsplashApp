@@ -16,16 +16,26 @@ class PhotosRepository @Inject constructor(
     val photosLiveData: LiveData<NetworkResult<List<Image>>>
         get() = _photosLiveData
 
+    private var currentPage = 1
+    private var hasMorePages = true
     suspend fun getPhotos(){
-        val response = unsplashAPI.getPhotos()
+        if (!hasMorePages) return
+        _photosLiveData.postValue(NetworkResult.Loading())
+
+        val response = unsplashAPI.getPhotos(currentPage, "jsJzMhc1hlkBJn69sV6cd2L2gfTLt1hvWwjYfwQhDCQ")
+
         Log.d("unsplashTest" , response.body().toString())
         if( response.isSuccessful && response.body() != null ){
             _photosLiveData.postValue(NetworkResult.Success(response.body()!!))
+            currentPage += 2
+            hasMorePages = response.body()!!.size == 14
         } else if( response.errorBody() != null ){
-            val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _photosLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
+            val errorMessage = response.errorBody()?.string() ?: "Something went wrong"
+            _photosLiveData.postValue(NetworkResult.Error(errorMessage))
+            hasMorePages = false
         } else {
             _photosLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            hasMorePages = false
         }
     }
 }
