@@ -1,13 +1,12 @@
 package com.example.unsplashapp.di
 
-import com.example.unsplashapp.api.unsplashAPI
+import com.example.unsplashapp.api.UnsplashAPI
 import com.example.unsplashapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.internal.http.RetryAndFollowUpInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -20,9 +19,9 @@ class NetworkModule {
     @Provides
     fun providesRetrofit(): Retrofit {
         val client = OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS) // Increase connect timeout to 30 seconds
-            .readTimeout(30, TimeUnit.SECONDS) // Increase read timeout to 30 seconds
-            .writeTimeout(30, TimeUnit.SECONDS) // Increase write timeout to 30 seconds
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
         return Retrofit.Builder()
@@ -34,7 +33,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesUnSplashAPI(retrofit: Retrofit): unsplashAPI {
-        return retrofit.create(unsplashAPI::class.java)
+    fun providesUnSplashAPI(retrofit: Retrofit): UnsplashAPI {
+        return retrofit.create(UnsplashAPI::class.java)
     }
 }

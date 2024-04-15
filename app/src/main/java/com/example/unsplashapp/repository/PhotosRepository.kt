@@ -3,14 +3,13 @@ package com.example.unsplashapp.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.unsplashapp.api.unsplashAPI
+import com.example.unsplashapp.api.UnsplashAPI
 import com.example.unsplashapp.models.Image
 import com.example.unsplashapp.util.NetworkResult
-import org.json.JSONObject
 import javax.inject.Inject
 
 class PhotosRepository @Inject constructor(
-    private val unsplashAPI: unsplashAPI
+    private val unsplashAPI: UnsplashAPI
 ) {
     private val _photosLiveData = MutableLiveData<NetworkResult<List<Image>>>()
     val photosLiveData: LiveData<NetworkResult<List<Image>>>

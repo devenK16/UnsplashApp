@@ -51,13 +51,11 @@ class ImageAdapter(private val context: Context) : androidx.recyclerview.widget.
         private var currentLoadJob: Job? = null
 
         fun bind(image: Image) {
-            currentLoadJob?.cancel()  // Cancel any ongoing loading
+            currentLoadJob?.cancel()
             val imageView = itemView.findViewById<ImageView>(R.id.imageView)
-//            imageView.setImageBitmap(null)  // Clear any existing image
-            imageView.setImageResource(R.drawable.placeholder)
+            imageView.setImageResource(R.drawable.placeholder_3)
             imageView.tag = image.urls.regular  // Set a unique tag
 
-            // Cancel the previous job and start a new one to load the image
             currentLoadJob = CoroutineScope(Dispatchers.Main).launch {
                 imageLoader.loadBitmap(image.urls.regular, imageView)
             }

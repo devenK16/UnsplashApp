@@ -5,7 +5,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface unsplashAPI {
+interface UnsplashAPI {
     @GET("/photos")
     suspend fun getPhotos(
         @Query("page") page: Int,

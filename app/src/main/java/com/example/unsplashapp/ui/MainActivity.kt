@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var progressBar: ProgressBar
-//    private val photosViewModel by viewModels<PhotosViewModel>()
     private lateinit var photosViewModel : PhotosViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,18 +32,18 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         photosViewModel = ViewModelProvider(this).get(PhotosViewModel::class.java)
         photosViewModel.getPhotos()
-//        Log.d("MainUnsplash" , response.toString())
         setupRecyclerView()
         bindObservers()
     }
 
     private fun setupRecyclerView() {
         recyclerView = findViewById(R.id.recyclerView)
-//        progressBar = findViewById(R.id.progressBar) // Assuming you have a ProgressBar in your layout
+        progressBar = findViewById(R.id.progressBar)
         imageAdapter = ImageAdapter(this)
         recyclerView.adapter = imageAdapter
         recyclerView.layoutManager = GridLayoutManager(this, 2)
-
+        recyclerView.setHasFixedSize(true)
+        recyclerView.setItemViewCacheSize(10)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -64,15 +63,15 @@ class MainActivity : AppCompatActivity() {
         photosViewModel.photosLiveData.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {
-//                    progressBar.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                     imageAdapter.addImages(it.data!!)
                 }
                 is NetworkResult.Error -> {
-//                    progressBar.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                     Toast.makeText(this, it.message ?: "An error occurred", Toast.LENGTH_SHORT).show()
                 }
                 is NetworkResult.Loading -> {
-//                    progressBar.visibility = View.VISIBLE
+                    progressBar.visibility = View.VISIBLE
                 }
             }
         })
