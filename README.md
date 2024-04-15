@@ -5,6 +5,15 @@
     git clone https://github.com/devenK16/UnsplashApp.git.
 * Open the project in Android Studio.
 
+# Features
+* MVVM Setup
+* HILT
+* Coroutines
+* API Integration using Retrofit
+* Image loading with Coroutines
+* Memory Cache with LinkedHashMap and disk caching
+* Error Handling
+
 # Dependencies
 
 * Coroutines
