@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         recyclerView = findViewById(R.id.recyclerView)
 //        progressBar = findViewById(R.id.progressBar) // Assuming you have a ProgressBar in your layout
-        imageAdapter = ImageAdapter()
+        imageAdapter = ImageAdapter(this)
         recyclerView.adapter = imageAdapter
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 

@@ -1,23 +1,29 @@
 package com.example.unsplashapp.ui.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.unsplashapp.R
 import com.example.unsplashapp.models.Image
+import com.example.unsplashapp.util.ImageLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class ImageAdapter : androidx.recyclerview.widget.ListAdapter<Image, ImageAdapter.ImageViewHolder>(
+class ImageAdapter(private val context: Context) : androidx.recyclerview.widget.ListAdapter<Image, ImageAdapter.ImageViewHolder>(
     ComparatorDiffUtil()
 ) {
+    private val imageLoader = ImageLoader(context)
     private val images = mutableListOf<Image>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
-        return ImageViewHolder(view)
+        return ImageViewHolder(view,imageLoader)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
@@ -38,14 +44,22 @@ class ImageAdapter : androidx.recyclerview.widget.ListAdapter<Image, ImageAdapte
         notifyItemRangeRemoved(0, currentSize)
     }
 
-    inner class ImageViewHolder(
-        itemView: View
+    class ImageViewHolder(
+        private val itemView: View,
+        private val imageLoader: ImageLoader
     ) : RecyclerView.ViewHolder(itemView) {
+        private var currentLoadJob: Job? = null
+
         fun bind(image: Image) {
-            itemView.findViewById<ImageView>(R.id.imageView).apply {
-                Glide.with(this)
-                    .load(image.urls.regular)
-                    .into(this)
+            currentLoadJob?.cancel()  // Cancel any ongoing loading
+            val imageView = itemView.findViewById<ImageView>(R.id.imageView)
+//            imageView.setImageBitmap(null)  // Clear any existing image
+            imageView.setImageResource(R.drawable.placeholder)
+            imageView.tag = image.urls.regular  // Set a unique tag
+
+            // Cancel the previous job and start a new one to load the image
+            currentLoadJob = CoroutineScope(Dispatchers.Main).launch {
+                imageLoader.loadBitmap(image.urls.regular, imageView)
             }
         }
     }
